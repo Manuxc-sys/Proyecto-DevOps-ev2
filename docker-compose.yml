@@ -1,0 +1,57 @@
+services:
+  db:
+    # -----------------------------------------------------------------------
+    # CONFIGURACIÓN LOCAL (Para CPUs antiguas como Phenom II sin x86-64-v2)
+    # image: mariadb:10.5
+    
+    # CONFIGURACIÓN PARA AWS (Descomenta esto y comenta mariadb al subir a AWS)
+    image: mysql:8.0
+    # -----------------------------------------------------------------------
+    container_name: db-microservicios
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_DATABASE: db_microservicios
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  api-ventas:
+    build: ./back-Ventas_SpringBoot/Springboot-API-REST
+    container_name: api-ventas
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/db_microservicios?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=admin123
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+
+  api-despachos:
+    build: ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
+    container_name: api-despachos
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/db_microservicios?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=admin123
+    ports:
+      - "8082:8081"
+    depends_on:
+      - db
+
+  frontend:
+    build: ./front_despacho
+    container_name: frontend-app
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - api-ventas
+      - api-despachos
+
+volumes:
+  db_data: # Persistencia para la BD
