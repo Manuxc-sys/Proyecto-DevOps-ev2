@@ -1,0 +1,43 @@
+name: CI/CD API Ventas
+
+on:
+  push:
+    branches: [ "deploy" ]
+    paths:
+      - 'back-Ventas_SpringBoot/**' # Solo se ejecuta si hay cambios en esta carpeta
+
+jobs:
+  build-and-push:
+    name: Build & Push to ECR
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout del código
+      uses: actions/checkout@v3
+
+    - name: Configurar credenciales de AWS
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Login en Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Construir, etiquetar y subir imagen a ECR
+      env:
+        ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+        ECR_REPOSITORY: tienda-ventas
+        IMAGE_TAG: latest
+      run: |
+        # Navegamos a la carpeta del proyecto
+        cd back-Ventas_SpringBoot/Springboot-API-REST
+        
+        # Construimos la imagen (Multi-stage)
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        
+        # Subimos la imagen a AWS
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
