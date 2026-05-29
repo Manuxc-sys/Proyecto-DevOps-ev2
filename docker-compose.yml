@@ -1,12 +1,6 @@
 services:
   db:
-    # -----------------------------------------------------------------------
-    # CONFIGURACIÓN LOCAL (Para CPUs antiguas como Phenom II sin x86-64-v2)
-    image: mariadb:10.5
-    
-    # CONFIGURACIÓN PARA AWS (Descomenta esto y comenta mariadb al subir a AWS)
-    # image: mysql:8.0
-    # -----------------------------------------------------------------------
+    build: ./
     container_name: db-microservicios
     restart: always
     environment:
