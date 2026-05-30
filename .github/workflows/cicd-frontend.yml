@@ -34,6 +34,11 @@ jobs:
         IMAGE_TAG: latest
       run: |
         cd front_despacho
+        # Inyectamos las variables de entorno para que Vite las lea al compilar
+        echo "VITE_API_VENTAS_URL=http://54.86.165.16:8080" > .env
+        echo "VITE_API_DESPACHOS_URL=http://54.86.165.16:8090" >> .env
+        
+        # Construimos y subimos la imagen
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
