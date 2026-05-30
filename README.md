@@ -1,10 +1,10 @@
-# 🚀 Plataforma de Microservicios Contenedorizada con Arquitectura CI/CD en AWS
+# Plataforma de Microservicios Contenedorizada con Arquitectura CI/CD en AWS
 
 Este repositorio contiene la arquitectura, el código fuente y los pipelines de automatización para la plataforma de microservicios de la empresa **Innovatech Chile**. El proyecto implementa un ecosistema multinivel completamente contenedorizado, desacoplado y con un flujo automatizado de Integración y Despliegue Continuos (CI/CD) hacia la nube de Amazon Web Services (AWS).
 
 ---
 
-## 🏗️ Arquitectura del Sistema
+## Arquitectura del Sistema
 
 La solución se compone de 4 microservicios independientes, diseñados bajo buenas prácticas *Cloud-Native*:
 
@@ -15,7 +15,7 @@ La solución se compone de 4 microservicios independientes, diseñados bajo buen
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+## Tecnologías Utilizadas
 
 * **Contenedores y Orquestación:** Docker, Dockerfile (Multi-stage), Docker Compose.
 * **Backend:** Java 17, Spring Boot 3.x, JPA / Hibernate.
@@ -25,7 +25,7 @@ La solución se compone de 4 microservicios independientes, diseñados bajo buen
 
 ---
 
-## 🔒 Buenas Prácticas DevOps Implementadas
+## Buenas Prácticas DevOps Implementadas
 
 ### 1. Optimización de Imágenes (Multi-stage Build)
 Los backends implementan Dockerfiles multi-etapa. Se utiliza una imagen pesada con Maven para la compilación (`AS builder`) y se descarta en la fase de ejecución, copiando el artefacto `.jar` en una imagen base ligera `eclipse-temurin:17-jre-alpine`. Esto minimiza el tamaño de la imagen y reduce vulnerabilidades.
@@ -41,7 +41,7 @@ El pipeline de Despliegue Continuo (CD) no utiliza SSH ni requiere exponer el pu
 
 ---
 
-## 🚀 Flujo de CI/CD (GitHub Actions)
+## Flujo de CI/CD (GitHub Actions)
 
 Los pipelines están automatizados mediante workflows individuales en `.github/workflows/`. Cada vez que se realiza un evento de `push` en la rama `deploy`, se ejecuta el siguiente proceso:
 
@@ -52,7 +52,7 @@ Los pipelines están automatizados mediante workflows individuales en `.github/w
 
 ---
 
-## 💻 Ejecución del Proyecto
+## Ejecución del Proyecto
 
 ### Requisitos Previos
 * Docker Desktop e instalado.
