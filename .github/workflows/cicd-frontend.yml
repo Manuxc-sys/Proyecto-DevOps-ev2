@@ -36,3 +36,16 @@ jobs:
         cd front_despacho
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        
+    - name: Desplegar Frontend en EC2 via SSM
+      run: |
+        aws ssm send-command \
+          --instance-ids "${{ secrets.EC2_FRONTEND_INSTANCE_ID }}" \
+          --document-name "AWS-RunShellScript" \
+          --parameters commands=[ \
+            "aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}", \
+            "sudo docker pull ${{ secrets.ECR_REGISTRY }}/tienda-frontend:latest", \
+            "sudo docker stop front-container || true", \
+            "sudo docker rm front-container || true", \
+            "sudo docker run -d --name front-container -p 80:80 ${{ secrets.ECR_REGISTRY }}/tienda-frontend:latest" \
+          ]    
