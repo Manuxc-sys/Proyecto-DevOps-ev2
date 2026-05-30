@@ -36,11 +36,11 @@ jobs:
         cd db
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-    
+
     - name: Desplegar DB en EC2 via SSM
       run: |
         aws ssm send-command \
           --instance-ids "${{ secrets.EC2_DB_INSTANCE_ID }}" \
           --document-name "AWS-RunShellScript" \
-          --parameters commands="aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }} ; sudo docker pull ${{ secrets.ECR_REGISTRY }}/tienda-db:latest ; sudo docker stop db-container || true ; sudo docker rm db-container || true ; sudo docker run -d --name db-container -p 3306:3306 -e MYSQL_ROOT_PASSWORD=${{ secrets.DB_PASSWORD }} -e MYSQL_DATABASE=db_microservicios ${{ secrets.ECR_REGISTRY }}/tienda-db:latest"
+          --parameters commands="aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }} ; sudo docker pull ${{ secrets.ECR_REGISTRY }}/tienda-db:latest ; sudo docker stop db-container || true ; sudo docker rm db-container || true ; sudo docker run -d --name db-container -p 3306:3306 -e MYSQL_ROOT_PASSWORD=${{ secrets.DB_PASSWORD }} -e MYSQL_DATABASE=db_microservicios ${{ secrets.ECR_REGISTRY }}/tienda-db:latest --default-authentication-plugin=mysql_native_password --require_secure_transport=OFF"
               
