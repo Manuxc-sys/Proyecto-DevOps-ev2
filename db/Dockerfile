@@ -7,3 +7,4 @@ FROM mysql:8.0
 # Exponemos el puerto
 EXPOSE 3306
 
+ 
