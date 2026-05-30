@@ -36,16 +36,10 @@ jobs:
         cd back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        
+
     - name: Desplegar API Despachos en EC2 via SSM
       run: |
         aws ssm send-command \
           --instance-ids "${{ secrets.EC2_BACKEND_INSTANCE_ID }}" \
           --document-name "AWS-RunShellScript" \
-          --parameters commands=[ \
-            "aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}", \
-            "sudo docker pull ${{ secrets.ECR_REGISTRY }}/tienda-despachos:latest", \
-            "sudo docker stop despachos-container || true", \
-            "sudo docker rm despachos-container || true", \
-            "sudo docker run -d --name despachos-container -p 8090:8090 ${{ secrets.ECR_REGISTRY }}/tienda-despachos:latest" \
-          ]    
+          --parameters commands="aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }} ; sudo docker pull ${{ secrets.ECR_REGISTRY }}/tienda-despachos:latest ; sudo docker stop despachos-container || true ; sudo docker rm despachos-container || true ; sudo docker run -d --name despachos-container -p 8090:8090 ${{ secrets.ECR_REGISTRY }}/tienda-despachos:latest"
